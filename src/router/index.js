@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import Home from '../views/home.vue'
 import Vuex from '../views/vuex.vue'
+import Three3D from '../views/three.vue'
 
 const routes = [
   {
@@ -12,6 +13,11 @@ const routes = [
     path: '/vuex',
     name: 'Vuex',
     component: Vuex
+  },
+  {
+    path: '/three',
+    name: 'Three',
+    component: Three3D
   }
 ]
 
