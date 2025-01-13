@@ -86,6 +86,10 @@ const options = [
     value: '002583',
     label: '海能达（002583）',
   },
+  {
+    value: '300229',
+    label: '拓尔思（300229）',
+  },
 ]
 
 const searchForm = reactive({
