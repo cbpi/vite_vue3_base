@@ -3,6 +3,7 @@ import Home from '../views/home.vue'
 import Stock from '../views/stock.vue'
 import Three3D from '../views/three.vue'
 import Demo from '../views/demo.vue'
+import Grid from '../views/gridTransaction.vue'
 
 const routes = [
   {
@@ -24,6 +25,11 @@ const routes = [
     path: '/demo',
     name: 'Demo',
     component: Demo
+  },
+  {
+    path: '/grid',
+    name: 'Grid',
+    component: Grid
   }
 ]
 
