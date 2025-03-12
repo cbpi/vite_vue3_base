@@ -1,17 +1,10 @@
 <template>
   <div>
-    <div class="search-fields">
+    <div class="search-fields mb-8">
       <el-form :inline="true" :model="searchForm" class="demo-form-inline">
         <el-form-item label="股票代码">
-          <el-select v-model="searchForm.ticker" placeholder="选择股票代码">
+          <el-select v-model="searchForm.ticker" placeholder="选择股票代码" @change="handleSelected">
             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="证券公司">
-          <el-select v-model="searchForm.exchange_code" placeholder="选择证券公司" clearable>
-            <el-option label="上交所" value="XSHG" />
-            <el-option label="深交所" value="XSHE" />
-            <template #empty></template>
           </el-select>
         </el-form-item>
         <el-form-item label="开始时间">
@@ -27,30 +20,92 @@
         </el-form-item>
       </el-form>
     </div>
-    <el-form :model="form" label-width="auto" style="max-width: 600px">
-      <el-form-item label="前一天最高">
-        <el-input-number v-model="form.dayBeforeHigh" />
-      </el-form-item>
-      <el-form-item label="前一天最低">
-        <el-input-number v-model="form.dayBeforeLow" />
-      </el-form-item>
-      <el-form-item label="前一天收盘">
-        <el-input-number v-model="form.dayBeforeClose" />
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="onSubmit">计算</el-button>
-      </el-form-item>
-    </el-form>
-    <div style="text-align: left;"><span class="blue">数轴线：</span>{{ pivot_point }}</div>
-    <div class="text-left"><span class="green">第一阻力位：</span>{{ firstResistanceLevel }}</div>
-    <div class="text-left"><span class="green">第二阻力位：</span>{{ secondResistanceLevel }}</div>
-    <div class="text-left"><span class="green">第三阻力位：</span>{{ thirdResistanceLevel }}</div>
+    <el-row :gutter="20">
+      <el-col :span="8">
+        <el-form :model="form" label-width="auto" size="large">
+          <el-form-item label="该股数轴线">
+            <el-tag type="default">
+              {{ pivot_point }}
+            </el-tag>
+          </el-form-item>
+          <el-form-item label="前一天最高">
+            <el-tag type="danger" effect="dark">
+              {{ form.dayBeforeHigh }}
+            </el-tag>
+          </el-form-item>
+          <el-form-item label="前一天最低">
+            <el-tag type="success" effect="dark">
+              {{ form.dayBeforeLow }}
+            </el-tag>
+          </el-form-item>
+          <el-form-item label="前一天收盘">
+            <el-tag type="primary" effect="dark">
+              {{ form.dayBeforeClose }}
+            </el-tag>
+          </el-form-item>
+          <el-form-item>
+            <!-- <el-button type="primary" @click="onSubmit">计算</el-button> -->
 
-    <el-divider />
-
-    <div class="text-left"><span class="red">第一支撑位：</span>{{ firstSupportLevel }}</div>
-    <div class="text-left"><span class="red">第二支撑位：</span>{{ secondSupportLevel }}</div>
-    <div class="text-left"><span class="red">第三支撑位：</span>{{ thirdSupportLevel }}</div>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <el-col :span="8">
+        <el-descriptions class="margin-top" :column="1" size="default" direction="vertical" border>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                第一阻力位
+              </div>
+            </template>
+            <span class="text-green-500 font-black">{{ firstResistanceLevel }}</span>
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                第二阻力位
+              </div>
+            </template>
+            <span class="text-green-500 font-black">{{ secondResistanceLevel }}</span>
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                第三阻力位
+              </div>
+            </template>
+            <span class="text-green-500 font-black">{{ thirdResistanceLevel }}</span>
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-col>
+      <el-col :span="8">
+        <el-descriptions class="margin-top" :column="1" direction="vertical" size="default" border>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                第一支撑位
+              </div>
+            </template>
+            <span class="text-red-600 font-black">{{ firstSupportLevel }}</span>
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                第二支撑位
+              </div>
+            </template>
+            <span class="text-red-600 font-black">{{ secondSupportLevel }}</span>
+          </el-descriptions-item>
+          <el-descriptions-item>
+            <template #label>
+              <div class="cell-item">
+                第三支撑位
+              </div>
+            </template>
+            <span class="text-red-600 font-black">{{ thirdSupportLevel }}</span>
+          </el-descriptions-item>
+        </el-descriptions>
+      </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -79,20 +134,8 @@ const options = [
     label: '软通动力（301236）',
   },
   {
-    value: '000736',
-    label: '中交地产（000736）',
-  },
-  {
-    value: '002583',
-    label: '海能达（002583）',
-  },
-  {
     value: '002402',
     label: '和而泰（002402）',
-  },
-  {
-    value: '603717',
-    label: '天域生物（603717）',
   },
   {
     value: '300031',
@@ -102,7 +145,21 @@ const options = [
     value: '600602',
     label: '云赛（600602）',
   },
+  {
+    value: '603496',
+    label: '恒为科技（603496）',
+  },
 ]
+
+const handleSelected = (v) => {
+  let securitiesCompany = ''
+  if (/^60|^68/.test(v)) {
+    securitiesCompany = 'XSHG';
+  } else if (/^00|^30|^002/.test(v)) {
+    securitiesCompany = 'XSHE';
+  }
+  searchForm.exchange_code = securitiesCompany;
+}
 
 const searchForm = reactive({
   ticker: '',
@@ -131,11 +188,10 @@ const secondSupportLevel = computed(() => (pivot_point.value - (form.dayBeforeHi
 const thirdSupportLevel = computed(() => (form.dayBeforeLow - 2 * (form.dayBeforeHigh - pivot_point.value)).toFixed(2));
 
 const handleOnsearch = () => {
-  console.log(searchForm.start_date)
+
   axios.get(`/socketapi/api/fin/stock/${searchForm.exchange_code}/daily`, {
     params: searchForm
   }).then(res => {
-    console.log(res)
     if (res.data.code === 200) {
       form.dayBeforeHigh = res.data.data[0].high;
       form.dayBeforeLow = res.data.data[0].low;
@@ -144,6 +200,8 @@ const handleOnsearch = () => {
         message: res.data.msg,
         type: 'success',
       })
+
+      onSubmit()
     } else {
       ElMessage.error(res.data.msg)
     }
